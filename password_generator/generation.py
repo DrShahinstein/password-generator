@@ -1,8 +1,6 @@
 import string 
 import random
 
-specials = "!@#$%^&*()"
-
 def generate_password(length: int, alphabetic=True, numeric=True, lowercase=True, uppercase=True, special_chars=True) -> str:
     chars = []
     if alphabetic:
@@ -13,7 +11,7 @@ def generate_password(length: int, alphabetic=True, numeric=True, lowercase=True
     if numeric:
         chars += [*string.digits]
     if special_chars:
-        chars += [*specials]   
+        chars += [*string.punctuation]   
     random.shuffle(chars)
     
     return "".join([chars[i] for i in range(length)])
