@@ -8,10 +8,10 @@ def generate_password(length: int, numeric=True, lowercase=True, uppercase=True,
         *(string.ascii_uppercase if uppercase else []),
         *(string.ascii_lowercase if lowercase else []),
     ]
-    result = ""
-    for i in range(length):
-        result += random.choice(chars)
+    password = ""
+    for _ in range(length):
+        password += random.choice(chars)
 
-    return result
+    return password
         
 
