@@ -2,18 +2,16 @@ import string
 import random
 
 def generate_password(length: int, numeric=True, lowercase=True, uppercase=True, special_chars=True) -> str:
-    chars = []
-    
-    if lowercase:
-        chars += [*string.ascii_lowercase]
-    if uppercase:
-        chars += [*string.ascii_uppercase]
-    if numeric:
-        chars += [*string.digits]
-    if special_chars:
-        chars += [*string.punctuation]   
-        
-    random.shuffle(chars)
-    return "".join([chars[i] for i in range(length)])
+    chars = [
+        *(string.punctuation if special_chars else []),
+        *(string.digits if numeric else []),
+        *(string.ascii_uppercase if uppercase else []),
+        *(string.ascii_lowercase if lowercase else []),
+    ]
+    result = ""
+    for i in range(length):
+        result += random.choice(chars)
+
+    return result
         
 
