@@ -6,17 +6,17 @@ This document is a template for the development.
 
 **Options**:
 ```
---no-upper   No uppercase
---no-lower   No lowercase
---no-numeric No numeric characters
---no-punct   No punctuation
---save       Save generated password to the vault.
+--upper   Enable/Disable uppercase chars (ABC) | DEFAULT=True
+--lower   Enable/Disable lowercase chars (abc) | DEFAULT=True
+--numeric Enable/Disable numeric chars (123) | Default=True
+--punct   Enable/Disable punctuation chars (@!?) | Default=True
+--save    Save generated password to the vault.
 ```
 
 ### Example
 
 ```
-passgen generate --save --no-upper
+passgen generate --save 
 [jsh2hdi*&] Ok? [Enter/Tab]
 Enter your main password for my_vault: *******
 Enter a name for your new generated password: gh_pass
