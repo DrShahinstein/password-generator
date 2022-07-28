@@ -6,11 +6,11 @@ This document is a template for the development.
 
 **Options**:
 ```
---no-upper _No uppercase_
---no-lower _No lowercase_
---no-numeric _No numeric characters_
---no-punct _No punctuation_
---save _Save generated password to the vault._
+--no-upper   No uppercase
+--no-lower   No lowercase
+--no-numeric No numeric characters
+--no-punct   No punctuation
+--save       Save generated password to the vault.
 ```
 
 ### Example
