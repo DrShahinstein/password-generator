@@ -10,12 +10,17 @@ def cli(): pass
 @click.option('--lower', default=True, help="Enable/Disable lowercase chars (abc) | DEFAULT=True")
 @click.option('--numeric', default=True, help="Enable/Disable numeric chars (123) | Default=True")
 @click.option('--punct', default=True, help="Enable/Disable punctuation chars (@!?) | Default=True")
-
 def generate(length, upper, lower, numeric, punct):
     """Generate a Strong Password"""
     
     password = generate_password(length, numeric, lower, upper, punct)
     click.echo(password)
+
+@cli.command()
+@click.option("--vault", help="Pick a vault to put your password in (business, social_media, etc.)")
+@click.argument("password_identifier")
+def save(password_identifier):
+    pass
 
 def main():
     cli()
