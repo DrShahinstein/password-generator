@@ -18,7 +18,7 @@ PASSWORD_IDENTIFIER    A name for new password.
 
 ```
 $ passgen save google_password
-Enter your main password for my_vault: *********
+Enter your vault password for your vault my_vault: *********
 Enter your password: ******
 Enter your password again: ******
 Password saved!
