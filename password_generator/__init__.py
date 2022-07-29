@@ -24,7 +24,7 @@ def generate(length, upper, lower, numeric, punct):
 @click.argument("password_identifier")
 def save(vault, password_identifier):
     """Save your passwords into your vaults"""
-    
+    # TODO: Check if the given vault exists here.
     vault_password = click.prompt(f"Enter your vault password for your vault {vault}", hide_input=True)
     password = click.prompt("Enter your password", hide_input=True)
     password_repetition = click.prompt("Enter your password again", hide_input=True)
