@@ -31,6 +31,7 @@ def save(vault, password_identifier):
     
     # The following lines of codes are in test/debug purpose
     if password == password_repetition:
+        # TODO: Save the password to the given vault or default vault.
         click.echo("Password has been saved!")
         click.echo(f"You've written {vault_password} for your vault password unlocking your vault")
         click.echo(f"{password} is your password")
