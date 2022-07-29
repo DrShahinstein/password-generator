@@ -21,10 +21,6 @@ CONFIG_FILE = CONFIG_FOLDER / 'config.json'
 if not os.path.exists(CONFIG_FOLDER):
     os.mkdir(CONFIG_FOLDER)
 
-if not os.path.exists(CONFIG_FILE):
-    generate_config()
-
-
 class ConfigError(Exception):
     pass
 
