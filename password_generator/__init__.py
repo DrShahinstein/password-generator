@@ -1,6 +1,7 @@
 import click
 from .generation import generate_password
-
+from config import Config
+from vault import VaultManager
 
 @click.group()
 def cli(): pass
@@ -48,6 +49,8 @@ def save(vault, password_identifier):
 
 
 def main():
+    conf = Config()
+    vault = VaultManager(conf)
     cli()
 
 
