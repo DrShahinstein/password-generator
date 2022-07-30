@@ -1,4 +1,3 @@
-
 import json
 import os
 from pathlib import Path
@@ -76,11 +75,11 @@ class VaultManager:
 
     @property
     def default_vault(self):
-        return self.config.config['default_vault']
+        return self.config.config['default-vault']
 
     @default_vault.setter
     def default_vault(self, new):
-        self.config.config['default_vault'] = new
+        self.config.config['default-vault'] = new
         self.config.save()
 
 
