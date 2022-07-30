@@ -1,7 +1,13 @@
 import click
 from .generation import generate_password
-from config import Config
-from vault import VaultManager
+
+WARNING_MESSAGE = \
+    """
+WARNING: YOU WON'T BE ABLE TO ACCESS YOUR VAULT WITHOUT THIS PASSWORD.
+Notice: You'll need the salt value to access this vault in another system.
+Don't forget to copy /home/user/.config/password-manager/config.json file.
+    """
+
 
 @click.group()
 def cli(): pass
@@ -10,10 +16,10 @@ def cli(): pass
 @cli.command()
 @click.option('--save', default=False, is_flag=True, help="Save your password into your vault | DEFAULT=False")
 @click.option('--length', default=8, help="Determine the length of the password | DEFAULT=8")
-@click.option('--upper', default=True, help="Enable/Disable uppercase chars (ABC) | DEFAULT=True")
-@click.option('--lower', default=True, help="Enable/Disable lowercase chars (abc) | DEFAULT=True")
-@click.option('--numeric', default=True, help="Enable/Disable numeric chars (123) | Default=True")
-@click.option('--punct', default=True, help="Enable/Disable punctuation chars (@!?) | Default=True")
+@click.option('--upper/--no-upper', default=True, help="Enable/Disable uppercase chars (ABC) | DEFAULT=True")
+@click.option('--lower/--no-lower', default=True, help="Enable/Disable lowercase chars (abc) | DEFAULT=True")
+@click.option('--numeric/--no-numeric', default=True, help="Enable/Disable numeric chars (123) | Default=True")
+@click.option('--punct/--no-punct', default=True, help="Enable/Disable punctuation chars (@!?) | Default=True")
 def generate(save, length, upper, lower, numeric, punct):
     """Generate a Strong Password"""
 
@@ -22,9 +28,10 @@ def generate(save, length, upper, lower, numeric, punct):
             password = generate_password(length, numeric, lower, upper, punct)
             if click.confirm(f"[{password}] OK?"):
                 click.echo("Password has been saved!")
-                break 
-            
-        
+                break
+    else:
+        password = generate_password(length, numeric, lower, upper, punct)
+        click.echo(password)
 
 
 @cli.command()
@@ -36,7 +43,7 @@ def save(vault, password_identifier):
     vault_password = click.prompt(f"Enter your vault password for your vault {vault}", hide_input=True)
     password = click.prompt("Enter your password", hide_input=True)
     password_repetition = click.prompt("Enter your password again", hide_input=True)
-    
+
     # The following lines of codes are in test/debug purpose
     if password == password_repetition:
         # TODO: Save the password to the given vault or default vault.
@@ -48,9 +55,49 @@ def save(vault, password_identifier):
         click.echo("Please make sure you did write the same passwords")
 
 
+@cli.group()
+def vault():
+    """Manages your vaults"""
+
+
+@vault.command()
+@click.argument("path")
+def add(path):
+    """Adds your existing vault into the config"""
+
+    vault_name = click.prompt("Enter a name for this vault")
+    is_default = click.confirm(f"Set {vault_name} as a default vault?")
+
+    if is_default:
+        click.echo(f"{vault_name} saved as default!")
+        # TODO: Provide the functionality of saving vault as default (The path is gonna be used here)
+    else:
+        click.echo("Done!")
+
+
+@vault.command()
+@click.argument("vault_name")
+@click.argument("path", required=False)
+def create(vault_name, path):
+    """Creates a new vault"""
+
+    click.echo("Creating a new vault...")
+    while True:
+        password = click.prompt("Enter a strong password for your vault", hide_input=True)
+        repetition = click.prompt("Repeat your password", hide_input=True)
+        if password == repetition:
+            click.echo(WARNING_MESSAGE)
+            if path:
+                click.echo(f"Vault Path: {path}")
+            is_default = click.confirm(f"Set {vault_name} as your default vault?")
+            click.echo("Done!")
+            if is_default:
+                pass
+                # TODO: Provide the functionality of saving the vault as default
+            break
+
+
 def main():
-    conf = Config()
-    vault = VaultManager(conf)
     cli()
 
 
