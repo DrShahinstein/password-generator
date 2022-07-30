@@ -10,12 +10,12 @@ def generate_salt():
     return os.urandom(16)
 
 EMPTY_CONFIG = {
-    "salt": generate_salt(),
+    "salt": generate_salt().decode('LATIN-1'),
     "vaults": {},
     "default-vault": None,
 }
 
-CONFIG_FOLDER = os.environ['XDG_CONFIG_HOME'] / 'password-generator'
+CONFIG_FOLDER = Path(os.environ['HOME']) / Path(".config") / 'password-generator'
 CONFIG_FILE = CONFIG_FOLDER / 'config.json'
 
 if not os.path.exists(CONFIG_FOLDER):
