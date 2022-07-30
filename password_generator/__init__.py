@@ -9,6 +9,9 @@ Notice: You'll need the salt value to access this vault in another system.
 Don't forget to copy {CONFIG_FILE} file.
     """
 
+config = Config()
+vaultmanager = VaultManager(config)
+
 
 @click.group()
 def cli(): pass
@@ -62,7 +65,7 @@ def vault():
 
 
 @vault.command()
-@click.argument("path")
+@click.argument("path", type=click.Path(exists=True))
 def add(path):
     """Adds your existing vault into the config"""
 
@@ -71,14 +74,14 @@ def add(path):
 
     if is_default:
         click.echo(f"{vault_name} saved as default!")
-        # TODO: Provide the functionality of saving vault as default (The path is gonna be used here)
+        vaultmanager.default_vault = path
     else:
         click.echo("Done!")
 
 
 @vault.command()
 @click.argument("vault_name")
-@click.argument("path", required=False)
+@click.argument("path", required=False, type=click.Path(exists=True))
 def create(vault_name, path):
     """Creates a new vault"""
 
@@ -93,17 +96,13 @@ def create(vault_name, path):
             is_default = click.confirm(f"Set {vault_name} as your default vault?")
             click.echo("Done!")
             if is_default:
-                pass
-                # TODO: Provide the functionality of saving the vault as default
+                vaultmanager.default_vault = path 
             break
 
 
 def main():
-    config = Config()
-    vaultmanager = VaultManager(config)
-
     cli()
 
-
 if __name__ == "__main__":
+    
     main()
