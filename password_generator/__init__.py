@@ -1,11 +1,12 @@
 import click
 from .generation import generate_password
+from .config import Config, VaultManager, CONFIG_FILE
 
 WARNING_MESSAGE = \
-    """
+    f"""
 WARNING: YOU WON'T BE ABLE TO ACCESS YOUR VAULT WITHOUT THIS PASSWORD.
 Notice: You'll need the salt value to access this vault in another system.
-Don't forget to copy /home/user/.config/password-manager/config.json file.
+Don't forget to copy {CONFIG_FILE} file.
     """
 
 
@@ -98,6 +99,9 @@ def create(vault_name, path):
 
 
 def main():
+    config = Config()
+    vaultmanager = VaultManager(config)
+
     cli()
 
 
