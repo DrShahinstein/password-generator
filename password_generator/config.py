@@ -44,7 +44,7 @@ class Config:
         """Generate a new config with default values."""
 
         with open(self.file, 'x') as file:
-            json.dump(EMPTY_CONFIG, file)
+            json.dump(EMPTY_CONFIG, file, indent=4)
 
     def _load_config(self):
         with open(self.file, 'r') as file:
