@@ -1,8 +1,10 @@
 import click
 from ..config import VaultManager, Config
+from ..vault import Vault
 
 config = Config()
 vaultmanager = VaultManager(config)
+
 
 @click.command()
 @click.argument("path", type=click.Path(exists=True))
@@ -30,18 +32,17 @@ def create(vault_name, path):
         password = click.prompt("Enter a strong password for your vault", hide_input=True)
         repetition = click.prompt("Repeat your password", hide_input=True)
         if password == repetition:
-            click.echo(WARNING_MESSAGE)
+            click.echo(WARNING_MESSAGE) # Not defined, it has to be imported somehow.
             new_path = Vault.create_vault(vault_name, path)
             is_default = click.confirm(f"Set {vault_name} as your default vault?")
+            
             if is_default:
-                vaultmanager.default_vault = vault_name 
-
+                vaultmanager.default_vault = vault_name
+                
             config.config['vaults'][vault_name] = new_path
             config.save()
-
             click.echo("Done!")
             break
-
 
 
 @click.command()
@@ -64,10 +65,8 @@ def remove(vault_name):
             return
 
         vaultmanager.vaults = tmp
-        
 
         click.echo("Vault removed from the known vaults.")
         click.echo("Done.")
     else:
         click.echo("Terminated.")
-
