@@ -1,6 +1,8 @@
 import click
 from .generation import generate_password
 from .config import Config, VaultManager, CONFIG_FILE
+from .vault import Vault
+from .cli import vault as vault_module
 
 WARNING_MESSAGE = \
     f"""
@@ -11,6 +13,24 @@ Don't forget to copy {CONFIG_FILE} file.
 
 config = Config()
 vaultmanager = VaultManager(config)
+
+class VaultNotFoundError(click.ClickException):
+    """
+    Raised when requested vault not found.
+    """
+
+def get_vault(name=None):
+    if name is None and vaultmanager.default_vault is None:
+        raise VaultNotFoundError("Vault is not found and default vault is empty.")
+
+    if name is None:
+        return Vault(vaultmanager.vaults[vaultmanager.default_vault])
+
+    try:
+        return Vault(vaultmanager.vaults[name])
+    except KeyError:
+        raise VaultNotFoundError("Vault is not found.")
+
 
 
 @click.group()
@@ -39,87 +59,37 @@ def generate(save, length, upper, lower, numeric, punct):
 
 
 @cli.command()
-@click.option("--vault", default="default", help="Pick a vault to put your password in (business, social_media, etc.)")
+@click.option("--vault", default=None, help="Pick a vault to put your password in (business, social_media, etc.)")
 @click.argument("password_identifier")
 def save(vault, password_identifier):
     """Save your passwords into your vaults"""
-    # TODO: Check if the given vault exists here.
-    vault_password = click.prompt(f"Enter your vault password for your vault {vault}", hide_input=True)
+    vault_object = get_vault(vault)
+
+    vault_password = click.prompt("Enter your vault password for your vault", hide_input=True)
     password = click.prompt("Enter your password", hide_input=True)
     password_repetition = click.prompt("Enter your password again", hide_input=True)
 
-    # The following lines of codes are in test/debug purpose
     if password == password_repetition:
-        # TODO: Save the password to the given vault or default vault.
+        tmp = vault_object.passwords.copy()
+        tmp[password_identifier] = password
+        vault_object.passwords = tmp
         click.echo("Password has been saved!")
-        click.echo(f"You've written {vault_password} for your vault password unlocking your vault")
-        click.echo(f"{password} is your password")
-        click.echo(f"{password_identifier} is your password_identifier")
     else:
         click.echo("Please make sure you did write the same passwords")
 
 
 @cli.group()
 def vault():
-    """Manages your vaults"""
+    pass
 
-
-@vault.command()
-@click.argument("path", type=click.Path(exists=True))
-def add(path):
-    """Adds your existing vault into the config"""
-
-    vault_name = click.prompt("Enter a name for this vault")
-    is_default = click.confirm(f"Set {vault_name} as a default vault?")
-
-    if is_default:
-        click.echo(f"{vault_name} saved as default!")
-        vaultmanager.default_vault = path
-    else:
-        click.echo("Done!")
-
-
-@vault.command()
-@click.argument("vault_name")
-@click.argument("path", required=False, type=click.Path(exists=True))
-def create(vault_name, path):
-    """Creates a new vault"""
-
-    click.echo("Creating a new vault...")
-    while True:
-        password = click.prompt("Enter a strong password for your vault", hide_input=True)
-        repetition = click.prompt("Repeat your password", hide_input=True)
-        if password == repetition:
-            click.echo(WARNING_MESSAGE)
-            if path:
-                click.echo(f"Vault Path: {path}")
-            is_default = click.confirm(f"Set {vault_name} as your default vault?")
-            click.echo("Done!")
-            if is_default:
-                vaultmanager.default_vault = path 
-            break
-
-
-@vault.command()
-@click.argument("vault_name")
-def remove(vault_name):
-    """Removes a vault"""
-
-    is_proceed = click.confirm(
-        "Are you sure you want to remove vaultname from known vaults?\n"
-        "You won't be able to use it unless you add it again.")
-    if is_proceed:
-        # TODO: Remove the vault
-        click.echo(f"\n{vault_name} is your vault btw.")  # DEBUG
-        click.echo("Vault removed from the known vaults.")
-        click.echo("Done.")
-    else:
-        click.echo("Terminated.")
+vault.add_command(vault_module.add)
+vault.add_command(vault_module.remove)
+vault.add_command(vault_module.create)
 
 
 def main():
     cli()
 
-
 if __name__ == "__main__":
+    
     main()

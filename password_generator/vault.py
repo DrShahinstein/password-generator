@@ -11,6 +11,8 @@ import json
 import os
 from pathlib import Path
 
+DEFAULT_VAULT_FOLDER = Path(os.environ['HOME']) / "PasswordVaults"
+
 
 class Vault:
     def __init__(self, filename):
@@ -31,22 +33,28 @@ class Vault:
         return content
     
     def _update_content(self, new_content):
-        with open(self.filename, 'x') as f:
+        with open(self.filename, 'w') as f:
             json.dump(new_content, f)
 
 
     @staticmethod 
     def create_vault(name, filename=None):
         if filename is None:
-            path = str(Path(os.environ['HOME']) / Path("PasswordVaults") / name)
+            if not os.path.exists(DEFAULT_VAULT_FOLDER):
+                os.mkdir(DEFAULT_VAULT_FOLDER)
+
+            path = str(DEFAULT_VAULT_FOLDER / name)
 
             while os.path.exists(path):
                 path += "1"
+
 
         else:
             path = filename
 
         with open(path, "w") as f:
-            pass
+            json.dump({}, f)
+
+        return path
         
 
