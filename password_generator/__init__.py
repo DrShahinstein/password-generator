@@ -100,9 +100,26 @@ def create(vault_name, path):
             break
 
 
+@vault.command()
+@click.argument("vault_name")
+def remove(vault_name):
+    """Removes a vault"""
+
+    is_proceed = click.confirm(
+        "Are you sure you want to remove vaultname from known vaults?\n"
+        "You won't be able to use it unless you add it again.")
+    if is_proceed:
+        # TODO: Remove the vault
+        click.echo(f"\n{vault_name} is your vault btw.")  # DEBUG
+        click.echo("Vault removed from the known vaults.")
+        click.echo("Done.")
+    else:
+        click.echo("Terminated.")
+
+
 def main():
     cli()
 
+
 if __name__ == "__main__":
-    
     main()
