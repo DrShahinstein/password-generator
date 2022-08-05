@@ -1,11 +1,21 @@
-# Generate Vault
+# Create a Vault
+
+<p>Creates a new vault</p>
+
+**Command**: `passgen vault create [OPTIONS] [ARGUMENTS]`
+
+**Options**
+
+| Option   | Description         |                 |
+| -------- | ------------------- | --------------- |
+| `--help` | Shows the help menu | `DEFAULT=False` |
 
 ## Arguments
 
-```
-VAULT_NAME      Name for the vault.
-VAULT_PATH      Path of the vault (not required)
-```
+| Argument     | Description                            |
+| ------------ | -------------------------------------- |
+| `VAULT_NAME` | A name for the vault                   |
+| `VAULT_PATH` | The path of the vault `(not required)` |
 
 ## Example
 
