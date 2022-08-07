@@ -56,5 +56,11 @@ class Vault:
             json.dump({}, f)
 
         return path
+
+    def add_password(self, identifier, password):
+        if identifier.strip() == "" or password.strip() == "":
+            raise ValueError("Password or identifier cannot be empty.")
+        self.passwords[identifier] = password
+        _update_content()
         
 
