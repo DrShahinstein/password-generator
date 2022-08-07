@@ -62,7 +62,7 @@ def remove(vault_name):
 
             del tmp[vault_name]
         except KeyError:
-            click.echo("Error: Vault doens't exist. Terminating.")
+            click.echo("Error: Vault doesn't exist.\nTerminating.")
             return
 
         vaultmanager.vaults = tmp
