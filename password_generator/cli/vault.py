@@ -69,3 +69,10 @@ def remove(vault_name):
         click.echo("Done.")
     else:
         click.echo("Terminated.")
+
+
+@click.command()
+def list():
+    """Lists the whole existing vaults"""
+    
+    # TODO: Echo the whole existing vaults.
