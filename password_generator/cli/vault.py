@@ -52,22 +52,21 @@ def remove(vault_name):
     """Removes a vault"""
 
     is_proceed = click.confirm(
-        "Are you sure you want to remove vaultname from known vaults?\n"
+        "Are you sure you want to remove vaultname from the existing vaults?\n"
         "You won't be able to use it unless you add it again.")
     if is_proceed:
         tmp = vaultmanager.vaults
         try:
             if vaultmanager.vaults[vault_name] == vaultmanager.default_vault:
                 vaultmanager.default_vault = None
-
             del tmp[vault_name]
+            
         except KeyError:
             click.echo("Error: Vault doesn't exist.\nTerminating.")
             return
 
         vaultmanager.vaults = tmp
-
-        click.echo("Vault removed from the known vaults.")
+        click.echo("Vault removed from the existing vaults.")
         click.echo("Done.")
     else:
         click.echo("Terminated.")
