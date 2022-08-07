@@ -69,8 +69,8 @@ def generate(save, vault, length, upper, lower, numeric, punct):
                 password = validated_password_prompt()
                 vault_object.add_password(password_identifier, password)
                 click.echo("Password saved!")
-
-    click.echo(password)
+            else:
+                click.echo(password)
 
 
 @cli.command()
