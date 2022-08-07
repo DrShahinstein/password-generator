@@ -26,24 +26,23 @@ def add(path):
 @click.argument("path", required=False, type=click.Path(exists=True))
 def create(vault_name, path):
     """Creates a new vault"""
-    from ..__init__ import WARNING_MESSAGE
+    from ..__init__ import WARNING_MESSAGE, validated_password_prompt
 
     click.echo("Creating a new vault...")
     while True:
-        password = click.prompt("Enter a strong password for your vault", hide_input=True)
-        repetition = click.prompt("Repeat your password", hide_input=True)
-        if password == repetition:
-            click.echo(WARNING_MESSAGE)
-            new_path = Vault.create_vault(vault_name, path)
-            is_default = click.confirm(f"Set {vault_name} as your default vault?")
+        validated_password_prompt()
+        
+        click.echo(WARNING_MESSAGE)
+        new_path = Vault.create_vault(vault_name, path)
+        is_default = click.confirm(f"Set {vault_name} as your default vault?")
+        
+        if is_default:
+            vaultmanager.default_vault = vault_name
             
-            if is_default:
-                vaultmanager.default_vault = vault_name
-                
-            config.config['vaults'][vault_name] = new_path
-            config.save()
-            click.echo("Done!")
-            break
+        config.config['vaults'][vault_name] = new_path
+        config.save()
+        click.echo("Done!")
+        break
 
 
 @click.command()
