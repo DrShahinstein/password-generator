@@ -75,4 +75,6 @@ def remove(vault_name):
 def list():
     """Lists the whole existing vaults"""
     
-    # TODO: Echo the whole existing vaults.
+    vault_base = vaultmanager.vaults
+    for vault in vault_base:
+        click.echo(vault)
