@@ -34,14 +34,15 @@ def get_vault(name=None):
         raise VaultNotFoundError("Vault is not found.")
 
 
-def password_validator(password):
+def password_validator():
+    password = click.prompt("Enter your password", hide_input=True)
     password_repetition = click.prompt("Enter your password again", hide_input=True)
-    is_equal = password == password_repetition
+    verification = password == password_repetition
 
-    if not is_equal:
+    if not verification:
         click.echo("Please make sure you did write exactly the same passwords.")
 
-    return is_equal
+    return (verification, password)
 
 
 @click.group()
@@ -65,8 +66,7 @@ def generate(save, length, upper, lower, numeric, punct):
                 vault_object = get_vault(vault)
                 vault_password = click.prompt(f"Enter your vault password for {vault_object}")
                 password_identifier = click.prompt("Enter a name for your new generated password")
-                password = click.prompt("Enter your password", hide_input=True)
-                verification = password_validator(password)
+                verification, password = password_validator()
 
                 if verification:
                     tmp = vault_object.passwords.copy()
@@ -87,8 +87,7 @@ def save(vault, password_identifier):
     
     vault_object = get_vault(vault)
     vault_password = click.prompt("Enter your password to your vault", hide_input=True)
-    password = click.prompt("Enter your password", hide_input=True)
-    verification = password_validator(password)
+    verification, password = password_validator()
 
     if verification:
         tmp = vault_object.passwords.copy()
