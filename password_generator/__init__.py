@@ -34,49 +34,43 @@ def get_vault(name=None):
         raise VaultNotFoundError("Vault is not found.")
 
 
-def password_validator():
+def validated_password_prompt():
     password = click.prompt("Enter your password", hide_input=True)
     password_repetition = click.prompt("Enter your password again", hide_input=True)
-    verification = password == password_repetition
 
-    if not verification:
+    if not password == password_repetition:
         click.echo("Please make sure you did write exactly the same passwords.")
+        return validated_password_prompt()
 
-    return (verification, password)
-
+    return password
 
 @click.group()
 def cli(): pass
 
 
 @cli.command()
-@click.option('--save', default=False, is_flag=True, help="Save your password into your vault | DEFAULT=False")
-@click.option('--length', default=8, help="Determine the length of the password | DEFAULT=8")
-@click.option('--upper/--no-upper', default=True, help="Enable/Disable uppercase chars (ABC) | DEFAULT=True")
-@click.option('--lower/--no-lower', default=True, help="Enable/Disable lowercase chars (abc) | DEFAULT=True")
-@click.option('--numeric/--no-numeric', default=True, help="Enable/Disable numeric chars (123) | Default=True")
-@click.option('--punct/--no-punct', default=True, help="Enable/Disable punctuation chars (@!?) | Default=True")
-def generate(save, length, upper, lower, numeric, punct):
+@click.option('--save', default=False, show_default=True is_flag=True, help="Save your password into your vault")
+@click.option("--vault", default=None, required=False, help="Pick a vault to put your password in (business, social_media, etc.)")
+@click.option('--length', default=8, show_default=True, help="Determine the length of the password")
+@click.option('--upper/--no-upper', default=True, show_default=True, help="Enable/Disable uppercase chars (ABC)")
+@click.option('--lower/--no-lower', default=True, show_default=True, help="Enable/Disable lowercase chars (abc)")
+@click.option('--numeric/--no-numeric', default=True, show_default=True, help="Enable/Disable numeric chars (123)")
+@click.option('--punct/--no-punct', default=True, show_default=True, help="Enable/Disable punctuation chars (@!?)")
+def generate(save, vault, length, upper, lower, numeric, punct):
     """Generate a Strong Password"""
 
-    if save:
-        while True:
-            password = generate_password(length, numeric, lower, upper, punct)
-            if click.confirm(f"[{password}] OK?"):
+    while True:
+        password = generate_password(length, numeric, lower, upper, punct)
+        if click.confirm(f"[{password}] OK?"):
+            if save:
                 vault_object = get_vault(vault)
                 vault_password = click.prompt(f"Enter your vault password for {vault_object}")
                 password_identifier = click.prompt("Enter a name for your new generated password")
-                verification, password = password_validator()
+                password = validated_password_prompt()
+                vault_object.add_password(password_identifier, password)
+                click.echo("Password saved!")
 
-                if verification:
-                    tmp = vault_object.passwords.copy()
-                    tmp[password_identifier] = password
-                    vault_object.passwords = tmp
-                    click.echo("Password saved!")
-
-    else:
-        password = generate_password(length, numeric, lower, upper, punct)
-        click.echo(password)
+    click.echo(password)
 
 
 @cli.command()
@@ -86,14 +80,11 @@ def save(vault, password_identifier):
     """Save your passwords into your vaults"""
     
     vault_object = get_vault(vault)
-    vault_password = click.prompt("Enter your password to your vault", hide_input=True)
-    verification, password = password_validator()
+    vault_password = click.prompt("Enter the password for your vault", hide_input=True)
+    password = validated_password_prompt()
 
-    if verification:
-        tmp = vault_object.passwords.copy()
-        tmp[password_identifier] = password
-        vault_object.passwords = tmp
-        click.echo("Password saved!")
+    vault_object.add_password(password_identifier, password)
+    click.echo("Password saved!")
 
 
 @cli.group()
