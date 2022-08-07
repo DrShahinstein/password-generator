@@ -60,7 +60,9 @@ class Vault:
     def add_password(self, identifier, password):
         if identifier.strip() == "" or password.strip() == "":
             raise ValueError("Password or identifier cannot be empty.")
-        self.passwords[identifier] = password
-        self._update_content(self.passwords)
+
+        tmp = self.passwords.copy()
+        tmp[identifier] = password
+        self.passwords = tmp
         
 
