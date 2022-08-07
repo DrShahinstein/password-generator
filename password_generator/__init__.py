@@ -49,7 +49,7 @@ def cli(): pass
 
 
 @cli.command()
-@click.option('--save', default=False, show_default=True is_flag=True, help="Save your password into your vault")
+@click.option('--save', default=False, show_default=True, is_flag=True, help="Save your password into your vault")
 @click.option("--vault", default=None, required=False, help="Pick a vault to put your password in (business, social_media, etc.)")
 @click.option('--length', default=8, show_default=True, help="Determine the length of the password")
 @click.option('--upper/--no-upper', default=True, show_default=True, help="Enable/Disable uppercase chars (ABC)")
@@ -64,14 +64,13 @@ def generate(save, vault, length, upper, lower, numeric, punct):
         if click.confirm(f"[{password}] OK?"):
             if save:
                 vault_object = get_vault(vault)
-                vault_password = click.prompt(f"Enter your vault password for {vault_object}")
+                vault_password = click.prompt(f"Enter your vault password", hide_input=True)
                 password_identifier = click.prompt("Enter a name for your new generated password")
-                password = validated_password_prompt()
                 vault_object.add_password(password_identifier, password)
                 click.echo("Password saved!")
             else:
                 click.echo(password)
-
+            break
 
 @cli.command()
 @click.option("--vault", default=None, help="Pick a vault to put your password in (business, social_media, etc.)")
