@@ -94,6 +94,7 @@ def vault():
 vault.add_command(vault_module.add)
 vault.add_command(vault_module.remove)
 vault.add_command(vault_module.create)
+vault.add_command(vault_module.list)
 
 
 def main():
