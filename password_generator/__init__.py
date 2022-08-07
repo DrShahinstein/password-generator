@@ -14,10 +14,12 @@ Don't forget to copy {CONFIG_FILE} file.
 config = Config()
 vaultmanager = VaultManager(config)
 
+
 class VaultNotFoundError(click.ClickException):
     """
     Raised when requested vault not found.
     """
+
 
 def get_vault(name=None):
     if name is None and vaultmanager.default_vault is None:
@@ -31,6 +33,15 @@ def get_vault(name=None):
     except KeyError:
         raise VaultNotFoundError("Vault is not found.")
 
+
+def password_validator(password):
+    password_repetition = click.prompt("Enter your password again", hide_input=True)
+    is_equal = password == password_repetition
+
+    if not is_equal:
+        click.echo("Please make sure you did write exactly the same passwords.")
+
+    return is_equal
 
 
 @click.group()
@@ -51,8 +62,18 @@ def generate(save, length, upper, lower, numeric, punct):
         while True:
             password = generate_password(length, numeric, lower, upper, punct)
             if click.confirm(f"[{password}] OK?"):
-                click.echo("Password has been saved!")
-                break
+                vault_object = get_vault(vault)
+                vault_password = click.prompt(f"Enter your vault password for {vault_object}")
+                password_identifier = click.prompt("Enter a name for your new generated password")
+                password = click.prompt("Enter your password", hide_input=True)
+                verification = password_validator(password)
+
+                if verification:
+                    tmp = vault_object.passwords.copy()
+                    tmp[password_identifier] = password
+                    vault_object.passwords = tmp
+                    click.echo("Password saved!")
+
     else:
         password = generate_password(length, numeric, lower, upper, punct)
         click.echo(password)
@@ -63,24 +84,23 @@ def generate(save, length, upper, lower, numeric, punct):
 @click.argument("password_identifier")
 def save(vault, password_identifier):
     """Save your passwords into your vaults"""
+    
     vault_object = get_vault(vault)
-
-    vault_password = click.prompt("Enter your vault password for your vault", hide_input=True)
+    vault_password = click.prompt("Enter your password to your vault", hide_input=True)
     password = click.prompt("Enter your password", hide_input=True)
-    password_repetition = click.prompt("Enter your password again", hide_input=True)
+    verification = password_validator(password)
 
-    if password == password_repetition:
+    if verification:
         tmp = vault_object.passwords.copy()
         tmp[password_identifier] = password
         vault_object.passwords = tmp
-        click.echo("Password has been saved!")
-    else:
-        click.echo("Please make sure you did write the same passwords")
+        click.echo("Password saved!")
 
 
 @cli.group()
 def vault():
     pass
+
 
 vault.add_command(vault_module.add)
 vault.add_command(vault_module.remove)
@@ -90,6 +110,6 @@ vault.add_command(vault_module.create)
 def main():
     cli()
 
+
 if __name__ == "__main__":
-    
     main()
