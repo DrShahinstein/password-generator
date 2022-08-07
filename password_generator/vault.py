@@ -61,6 +61,6 @@ class Vault:
         if identifier.strip() == "" or password.strip() == "":
             raise ValueError("Password or identifier cannot be empty.")
         self.passwords[identifier] = password
-        _update_content()
+        self._update_content()
         
 
