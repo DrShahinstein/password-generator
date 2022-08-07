@@ -21,7 +21,7 @@
 ```
 passgen generate --save
 [jsh2hdi*&] Ok? [y/N]:
-Enter your main password for my_vault: *******
+Enter your password to my_vault: *******
 Enter a name for your new generated password: gh_pass
 Password saved!
 ```
