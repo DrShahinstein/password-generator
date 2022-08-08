@@ -53,7 +53,7 @@ def remove(vault_name):
     """Removes a vault"""
 
     is_proceed = click.confirm(
-        "Are you sure you want to remove vaultname from the existing vaults?\n"
+        f"Are you sure you want to remove {vault_name} from the existing vaults?\n"
         "You won't be able to use it unless you add it again.")
     if is_proceed:
         tmp = vaultmanager.vaults
