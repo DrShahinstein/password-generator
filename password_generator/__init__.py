@@ -34,9 +34,9 @@ def get_vault(name=None):
         raise VaultNotFoundError("Vault is not found.")
 
 
-def validated_password_prompt():
-    password = click.prompt("Enter your password", hide_input=True)
-    password_repetition = click.prompt("Enter your password again", hide_input=True)
+def validated_password_prompt(prompt_text="Enter your password", repetition_text="Enter your password again"):
+    password = click.prompt(prompt_text, hide_input=True)
+    password_repetition = click.prompt(repetition_text, hide_input=True)
 
     if not password == password_repetition:
         click.echo("Please make sure you did write exactly the same passwords.")
