@@ -30,7 +30,9 @@ def create(vault_name, path):
 
     click.echo("Creating a new vault...")
     while True:
-        validated_password_prompt()
+        vault_password = validated_password_prompt(
+            prompt_text="Enter the password for your new vault",
+        )
         
         click.echo(WARNING_MESSAGE)
         new_path = Vault.create_vault(vault_name, path)
