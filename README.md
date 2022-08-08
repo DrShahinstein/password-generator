@@ -4,7 +4,7 @@ A CLI tool helping users to manage password operations.
 ## Installation
 ```
 poetry install
-poetry run python -m password_manager
+poetry run python -m password_generator
 ```
 
 ## Contribute
